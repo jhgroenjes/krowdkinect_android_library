@@ -5,7 +5,6 @@ import android.content.Intent
 
 class KrowdKinect {
 
-    // Rename the data class to KKOptions (both K's capitalized)
     data class KKOptions(
         val apiKey: String, // required
         val deviceID: UInt = 1u,
