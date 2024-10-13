@@ -41,3 +41,17 @@ dependencies {
 
     implementation libs.ably.android
 }
+
+afterEvaluate{
+    android.libraryVariants.each{variant->
+        publishing.publications.create(variant.name, MavenPublication){
+            from components.findByName(variant.name)
+
+            groupId = 'com.jhgroenjes'
+            artifactId = "krowdkinect_android_library"
+            version = '0.0.2'
+        }
+    }
+
+}
+
