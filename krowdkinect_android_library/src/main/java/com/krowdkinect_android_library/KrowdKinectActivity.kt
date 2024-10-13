@@ -24,6 +24,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 //import androidx.appcompat.app.AppCompatActivity
 import io.ably.lib.realtime.*
 import io.ably.lib.types.*
@@ -133,10 +134,10 @@ class KrowdKinectActivity : Activity() {
         }
 
         // Handle the "X" button to close the screen
-        // val exitButton: ImageView = findViewById(R.id.exitButton)
-        // exitButton.setOnClickListener {
-        //     showExitConfirmationDialog()
-        // }
+         val exitButton: ImageView = findViewById(R.id.exitButton)
+         exitButton.setOnClickListener {
+             showExitConfirmationDialog()
+         }
 
 
         //  code to initialize the camera manager and set the torch ID needed for candle mode
@@ -915,16 +916,6 @@ class KrowdKinectActivity : Activity() {
             handler.postDelayed({ specifiedColorFlash(!toggle, color, screenPixelInt) }, delay)
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     // Show dialog to confirm exit
     private fun showExitConfirmationDialog() {

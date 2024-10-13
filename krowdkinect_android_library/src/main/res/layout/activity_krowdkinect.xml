@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -32,8 +33,8 @@
 
     <EditText
         android:id="@+id/etSeatNumber"
-        android:layout_width="87dp"
-        android:layout_height="48dp"
+        android:layout_width="90dp"
+        android:layout_height="46dp"
         android:ems="10"
         android:hint="Seat"
         android:imeOptions=""
@@ -44,20 +45,20 @@
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/seatText"
         app:layout_constraintTop_toTopOf="parent" />
-    
+
     <TextView
-    android:id="@+id/seatText"
-    android:layout_width="59dp"
-    android:layout_height="29dp"
-    android:layout_marginStart="24dp"
-    android:layout_marginTop="8dp"
-    android:text="Seat"
-    android:textAlignment="viewStart"
-    android:textColor="@color/white"
-    android:textSize="18sp"
-    android:typeface="sans"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/seatText"
+        android:layout_width="40dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:text="Seat"
+        android:textAlignment="viewStart"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:typeface="sans"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     
     <TextView
     android:id="@+id/versionText"
@@ -67,24 +68,25 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent" />
-    
+
     <TextView
-    android:id="@+id/connectedText"
-    android:layout_width="39dp"
-    android:layout_height="118dp"
-    android:rotation="181"
-    android:rotationY="181"
-    android:text="."
-    android:textColor="#F81100"
-    android:textSize="96sp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/connectedText"
+        android:layout_width="39dp"
+        android:layout_height="118dp"
+        android:layout_marginStart="1dp"
+        android:rotation="181"
+        android:rotationY="181"
+        android:text="."
+        android:textColor="#F81100"
+        android:textSize="96sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/pickListButton"
-        android:layout_width="139dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="4dp"
+        android:layout_width="90dp"
+        android:layout_height="46dp"
+        android:layout_marginEnd="7dp"
         android:fontFamily="sans-serif"
         android:textAlignment="textEnd"
         android:textSize="18sp"
@@ -97,12 +99,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="68dp"
         android:fontFamily="sans-serif"
         android:text="Zone"
         android:textSize="18sp"
         android:typeface="sans"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
+
+    <ImageView
+        android:id="@+id/exitButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="Close KrowdKinect"
+        android:focusable="true"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
