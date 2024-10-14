@@ -81,7 +81,7 @@ var featuresArray = UByteArray(14)
 //var colorArray = set below because of variable size based on received packet.   Ui84rg.53iies:replacewithyourkey
 
 //  Set by the Host App in the SDK version, but these are the DEFAULTS
-var ablyKey = "Ui84rg.53iies:replacewithyourkey"
+//var ablyKey = "Ui84rg.53iies:replacewithyourkey"  // error checking using a proper format, future
 var deviceID: UInt = 1u
 var displayName = ""
 var displayTagline = ""
@@ -101,10 +101,12 @@ private lateinit var cameraManager: CameraManager   //used for candle mode funci
 
 
 class KrowdKinectActivity : Activity() {
+    val apiKey = intent.getStringExtra("apiKey")
+
     //define the ably read-only API key and other channel values.
-    private val options = ClientOptions(ablyKey)
-    private val ably = AblyRealtime(options)
-    private val channel = ably.channels.get("KrowdKinect")
+    val options = ClientOptions(apiKey)
+    val ably = AblyRealtime(options)
+    val channel = ably.channels.get("KrowdKinect")
 
     //audio player init.
     private var mediaPlayer: MediaPlayer? = null
@@ -115,11 +117,7 @@ class KrowdKinectActivity : Activity() {
         setContentView(R.layout.activity_krowdkinect)
 
         // Retrieve KKOptions from the intent and update from Defaults if needed
-        val apiKey = intent.getStringExtra("apiKey")
 
-        if (apiKey != null) {
-            ablyKey = apiKey
-        }
 
         if (intent.getStringExtra("deviceID") != deviceID.toString()) {
             deviceID = (intent.getStringExtra("deviceID"))?.toUInt() ?: 1u
