@@ -99,13 +99,7 @@ private lateinit var cameraManager: CameraManager   //used for candle mode funci
 
 
 class KrowdKinectActivity : Activity() {
-
-
-
     //define the ably read-only API key and other channel values.
-   // val options = ClientOptions(ablyKey)
-   // val ably = AblyRealtime(options)
-   // val channel = ably.channels.get("KrowdKinect")
     private lateinit var options: ClientOptions
     private lateinit var ably: AblyRealtime
     private lateinit var channel: Channel
@@ -119,19 +113,16 @@ class KrowdKinectActivity : Activity() {
         setContentView(R.layout.activity_krowdkinect)
 
         // Retrieve KKOptions from the intent and update from Defaults if needed
-        //val apiKey = intent.getStringExtra("apiKey")
         val apiKey = intent.getStringExtra("apiKey") ?: ablyKey // Use default if not found
-        println("API Key is $apiKey")
+
         // Initialize AblyRealtime with the updated ablyKey
         options = ClientOptions(apiKey)
         ably = AblyRealtime(options)
         channel = ably.channels.get("KrowdKinect")
 
+        // set the deviceID from the intent
         deviceID = intent.getIntExtra("deviceID", 1).toUInt()
 
-       // if (intent.getStringExtra("deviceID") != deviceID.toString()) {
-       //     deviceID = (intent.getStringExtra("deviceID"))?.toUInt() ?: deviceID
-       // }
         if (intent.getStringExtra("displayName") != displayName) {
             displayName = intent.getStringExtra("displayName").toString()
         }
