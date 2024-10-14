@@ -20,14 +20,3 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class io.ably.** { *; }
--keep class com.krowdkinect_android_library.KrowdKinect { *; }
--keep class com.krowdkinect_android_library.KrowdKinect$KKOptions { *; }
--keep class com.krowdkinect_android_library.KrowdKinect$Companion { *; }
-
--keepclassmembers class ** {
-    @kotlin.Metadata *;
-}
--keepclassmembers class com.krowdkinect_android_library.KrowdKinect {
-    public *;
-}

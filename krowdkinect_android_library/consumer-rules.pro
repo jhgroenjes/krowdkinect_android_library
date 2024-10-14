@@ -1,3 +1,0 @@
--keep class com.krowdkinect_android_library.KrowdKinect { *; }
--keep class com.krowdkinect_android_library.KrowdKinect$KKOptions { *; }
--keep class com.krowdkinect_android_library.KrowdKinect$Companion { *; }
