@@ -23,3 +23,9 @@
 -keep class io.ably.** { *; }
 -keep class com.krowdkinect_android_library.KrowdKinect { *; }
 -keep class com.krowdkinect_android_library.KrowdKinect$KKOptions { *; }
+-keepclassmembers class ** {
+    @kotlin.Metadata *;
+}
+-keepclassmembers class com.krowdkinect_android_library.KrowdKinect {
+    public *;
+}
