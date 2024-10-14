@@ -78,10 +78,10 @@ var screenPixel = false
 // *** Arrays ***
 var pixelArray = UShortArray(9)  //  <-- Defined down below in that section because it's use is OptIn right now
 var featuresArray = UByteArray(14)
-//var colorArray = set below because of variable size based on received packet.
+//var colorArray = set below because of variable size based on received packet.   Ui84rg.53iies:replacewithyourkey
 
 //  Set by the Host App in the SDK version, but these are the DEFAULTS
-var ablyKey = "Hf3iUg.5U0Azw:vnbLv80uvD3yJjT0Sgwb2ECgFCSXHAXQomrJOvwp-qk"
+var ablyKey = "Ui84rg.53iies:replacewithyourkey"
 var deviceID: UInt = 1u
 var displayName = ""
 var displayTagline = ""
@@ -116,6 +116,11 @@ class KrowdKinectActivity : Activity() {
 
         // Retrieve KKOptions from the intent and update from Defaults if needed
         val apiKey = intent.getStringExtra("apiKey")
+
+        if (apiKey != null) {
+            ablyKey = apiKey
+        }
+
         if (intent.getStringExtra("deviceID") != deviceID.toString()) {
             deviceID = (intent.getStringExtra("deviceID"))?.toUInt() ?: 1u
         }
@@ -190,7 +195,7 @@ class KrowdKinectActivity : Activity() {
         val seatTxt = findViewById<TextView>(R.id.seatText)
         val seatEditTxt = findViewById<EditText>(R.id.etSeatNumber)
         val zoneTxt = findViewById<TextView>(R.id.zoneText)
-        val connectedTxt = findViewById<TextView>(R.id.connectedText)
+        //val connectedTxt = findViewById<TextView>(R.id.connectedText)
         val buttonTxt = findViewById<TextView>(R.id.pickListButton)
 
         // Control Seat visibility based on seatNumberEditHide
