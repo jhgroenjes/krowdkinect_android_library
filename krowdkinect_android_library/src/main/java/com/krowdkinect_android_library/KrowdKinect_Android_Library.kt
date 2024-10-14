@@ -7,7 +7,7 @@ class KrowdKinect {
 
     data class KKOptions(
         val apiKey: String, // required
-        val deviceID: UInt = 1u,
+        val deviceID: Int = 1,
         val displayName: String? = null,
         val displayTagline: String? = null,
         val homeAwayHide: Boolean = true,
@@ -25,7 +25,7 @@ class KrowdKinect {
             val intent = Intent(context, KrowdKinectActivity::class.java)
 
             intent.putExtra("apiKey", KKOptions.apiKey)
-            intent.putExtra("deviceID", KKOptions.deviceID.toInt())  // UInt -> Int conversion
+            intent.putExtra("deviceID", KKOptions.deviceID)
             intent.putExtra("displayName", KKOptions.displayName)
             intent.putExtra("displayTagline", KKOptions.displayTagline)
             intent.putExtra("homeAwayHide", KKOptions.homeAwayHide)

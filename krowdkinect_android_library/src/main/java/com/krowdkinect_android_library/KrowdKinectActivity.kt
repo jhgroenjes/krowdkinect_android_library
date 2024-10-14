@@ -81,7 +81,7 @@ var featuresArray = UByteArray(14)
 //var colorArray = set below because of variable size based on received packet.   Ui84rg.53iies:replacewithyourkey
 
 //  Set by the Host App in the SDK version, but these are the DEFAULTS
-var ablyKey = "Hf3iUg.5U0Azw:vnbLv80uvD3yJjT0Sgwb2ECgFCSXHAXQomrJOvwp-qk"  // error checking using a proper format, future
+var ablyKey = "Hf22Ud.5U32zw:vnbLv44ureyfhgr0Sgwb2ECgFCSXHAXQomrJOvwp-qk"  // error checking using a proper format, future
 var deviceID: UInt = 1u
 var displayName = ""
 var displayTagline = ""
@@ -103,9 +103,12 @@ class KrowdKinectActivity : Activity() {
 
 
     //define the ably read-only API key and other channel values.
-    val options = ClientOptions(ablyKey)
-    val ably = AblyRealtime(options)
-    val channel = ably.channels.get("KrowdKinect")
+   // val options = ClientOptions(ablyKey)
+   // val ably = AblyRealtime(options)
+   // val channel = ably.channels.get("KrowdKinect")
+    private lateinit var options: ClientOptions
+    private lateinit var ably: AblyRealtime
+    private lateinit var channel: Channel
 
     //audio player init.
     private var mediaPlayer: MediaPlayer? = null
@@ -116,12 +119,19 @@ class KrowdKinectActivity : Activity() {
         setContentView(R.layout.activity_krowdkinect)
 
         // Retrieve KKOptions from the intent and update from Defaults if needed
-        val apiKey = intent.getStringExtra("apiKey")
+        //val apiKey = intent.getStringExtra("apiKey")
+        val apiKey = intent.getStringExtra("apiKey") ?: ablyKey // Use default if not found
         println("API Key is $apiKey")
+        // Initialize AblyRealtime with the updated ablyKey
+        options = ClientOptions(apiKey)
+        ably = AblyRealtime(options)
+        channel = ably.channels.get("KrowdKinect")
 
-        if (intent.getStringExtra("deviceID") != deviceID.toString()) {
-            deviceID = (intent.getStringExtra("deviceID"))?.toUInt() ?: 1u
-        }
+        deviceID = intent.getIntExtra("deviceID", 1).toUInt()
+
+       // if (intent.getStringExtra("deviceID") != deviceID.toString()) {
+       //     deviceID = (intent.getStringExtra("deviceID"))?.toUInt() ?: deviceID
+       // }
         if (intent.getStringExtra("displayName") != displayName) {
             displayName = intent.getStringExtra("displayName").toString()
         }
