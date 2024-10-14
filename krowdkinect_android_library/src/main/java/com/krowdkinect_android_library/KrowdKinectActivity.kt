@@ -28,6 +28,7 @@ import android.widget.ImageView
 //import androidx.appcompat.app.AppCompatActivity
 import io.ably.lib.realtime.*
 import io.ably.lib.types.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -108,6 +109,7 @@ class KrowdKinectActivity : Activity() {
     //audio player init.
     private var mediaPlayer: MediaPlayer? = null
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_krowdkinect)
