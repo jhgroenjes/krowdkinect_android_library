@@ -49,7 +49,7 @@ afterEvaluate{
 
             groupId = 'com.jhgroenjes'
             artifactId = "krowdkinect_android_library"
-            version = '0.4.0'
+            version = '0.5.9'
         }
     }
 

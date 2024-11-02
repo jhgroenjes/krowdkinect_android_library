@@ -69,7 +69,7 @@ var vDevID: UInt = 0u
 var torchBrightness : Int = 100
 var homeAwaySent = "All"
 val zoneItems = arrayOf("All", "Home", "Away")
-const val appVersion = "Ver. 0.4.0"
+const val appVersion = "Ver. 0.5.9"
 const val pixelArrayBytes = 18
 const val featuresArrayBytes = 14
 var screenPixel = false
@@ -371,29 +371,68 @@ class KrowdKinectActivity : Activity() {
                     //----------------------------------------------
                     val soundMapping = mapOf(
                         1 to Pair(R.raw.police, 0.2F),
-                        2 to Pair(R.raw.airraidsiren, 0.2F),
+                        2 to Pair(R.raw.airraid, 0.2F),
                         3 to Pair(R.raw.audience, 0.2F),
                         4 to Pair(R.raw.rain, 0.2F),
                         5 to Pair(R.raw.wolf, 0.2F),
                         6 to Pair(R.raw.fire, 0.2F),
                         7 to Pair(R.raw.wind, 0.2F),
-                        8 to Pair(R.raw.metronome, 0.2F),
+                        8 to Pair(R.raw.areyouready, 0.2F),
+                        9 to Pair(R.raw.bikebell, 0.2F),
+                        10 to Pair(R.raw.chimealert, 0.2F),
+                        11 to Pair(R.raw.cricket, 0.2F),
+                        12 to Pair(R.raw.crowdnoise, 0.2F),
+                        13 to Pair(R.raw.drumroll, 0.2F),
+                        14 to Pair(R.raw.eerienoise, 0.2F),
+                        15 to Pair(R.raw.finished, 0.2F),
+                        16 to Pair(R.raw.refwhistle, 0.2F),
+                        17 to Pair(R.raw.slidedrop, 0.2F),
+                        18 to Pair(R.raw.spaceship, 0.2F),
+                        19 to Pair(R.raw.synth, 0.2F),
+                        20 to Pair(R.raw.taperewind, 0.2F),
+                        21 to Pair(R.raw.whatrumpet, 0.2F),
                         84 to Pair(R.raw.police, 0.6F),
-                        85 to Pair(R.raw.airraidsiren, 0.6F),
+                        85 to Pair(R.raw.airraid, 0.6F),
                         86 to Pair(R.raw.audience, 0.6F),
                         87 to Pair(R.raw.rain, 0.6F),
                         88 to Pair(R.raw.wolf, 0.6F),
                         89 to Pair(R.raw.fire, 0.6F),
                         90 to Pair(R.raw.wind, 0.6F),
-                        91 to Pair(R.raw.metronome, 0.6F),
+                        91 to Pair(R.raw.areyouready, 0.6F),
+                        92 to Pair(R.raw.bikebell, 0.6F),
+                        93 to Pair(R.raw.chimealert, 0.6F),
+                        94 to Pair(R.raw.cricket, 0.6F),
+                        95 to Pair(R.raw.crowdnoise, 0.6F),
+                        96 to Pair(R.raw.drumroll, 0.6F),
+                        97 to Pair(R.raw.eerienoise, 0.6F),
+                        98 to Pair(R.raw.finished, 0.6F),
+                        99 to Pair(R.raw.refwhistle, 0.6F),
+                        100 to Pair(R.raw.slidedrop, 0.6F),
+                        101 to Pair(R.raw.spaceship, 0.6F),
+                        102 to Pair(R.raw.synth, 0.6F),
+                        103 to Pair(R.raw.taperewind, 0.6F),
+                        104 to Pair(R.raw.whatrumpet, 0.6F),
                         167 to Pair(R.raw.police, 1.0F),
-                        168 to Pair(R.raw.airraidsiren, 1.0F),
+                        168 to Pair(R.raw.airraid, 1.0F),
                         169 to Pair(R.raw.audience, 1.0F),
                         170 to Pair(R.raw.rain, 1.0F),
                         171 to Pair(R.raw.wolf, 1.0F),
                         172 to Pair(R.raw.fire, 1.0F),
                         173 to Pair(R.raw.wind, 1.0F),
-                        174 to Pair(R.raw.metronome, 1.0F)
+                        174 to Pair(R.raw.areyouready, 1.0F),
+                        175 to Pair(R.raw.bikebell, 1.0F),
+                        176 to Pair(R.raw.chimealert, 1.0F),
+                        177 to Pair(R.raw.cricket, 1.0F),
+                        178 to Pair(R.raw.crowdnoise, 1.0F),
+                        179 to Pair(R.raw.drumroll, 1.0F),
+                        180 to Pair(R.raw.eerienoise, 1.0F),
+                        181 to Pair(R.raw.finished, 1.0F),
+                        182 to Pair(R.raw.refwhistle, 1.0F),
+                        183 to Pair(R.raw.slidedrop, 1.0F),
+                        184 to Pair(R.raw.spaceship, 1.0F),
+                        185 to Pair(R.raw.synth, 1.0F),
+                        186 to Pair(R.raw.taperewind, 1.0F),
+                        187 to Pair(R.raw.whatrumpet, 1.0F)
                     )
                     val featureValue = featuresArray[6].toInt()
                     //println("Audio Playback of #: $featureValue ")
