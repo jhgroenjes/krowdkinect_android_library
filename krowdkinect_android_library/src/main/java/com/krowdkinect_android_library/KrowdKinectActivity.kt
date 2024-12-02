@@ -1,9 +1,12 @@
-@file:OptIn(ExperimentalUnsignedTypes::class)  // suppresses warning for using Unsigned Integers (new to android)
+@file:OptIn(ExperimentalUnsignedTypes::class)
+@file:Suppress("NAME_SHADOWING", "DEPRECATION")  // suppresses warning for using Unsigned Integers (new to android)
 
 
 package com.krowdkinect_android_library
 
 
+//import android.util.Log
+//import kotlinx.coroutines.DelicateCoroutinesApi
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -20,7 +23,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-//import android.util.Log
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ClickableSpan
@@ -30,11 +32,14 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.FrameLayout
-import io.ably.lib.realtime.*
-import io.ably.lib.types.*
+import io.ably.lib.realtime.AblyRealtime
+import io.ably.lib.realtime.Channel
+import io.ably.lib.realtime.ConnectionState
+import io.ably.lib.realtime.ConnectionState.closed
+import io.ably.lib.types.ClientOptions
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -43,8 +48,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.GregorianCalendar
 import kotlin.random.Random
-import androidx.core.text.HtmlCompat
-
 
 
 // pixelArray 16-bit Variables
@@ -78,7 +81,7 @@ var vDevID: UInt = 0u
 var torchBrightness : Int = 100
 var homeAwaySent = "All"
 val zoneItems = arrayOf("All", "Home", "Away")
-const val appVersion = "Ver. 0.6.2"
+const val appVersion = "Ver. 0.6.3"
 const val pixelArrayBytes = 18
 const val featuresArrayBytes = 14
 var screenPixel = false
@@ -102,11 +105,12 @@ var homeAwaySelection = "All"
 var isFlashOn: Boolean = false
 private val handler = Handler(Looper.myLooper()!!)
 var randomBrightness : Float = 0.7f
-var torchId: String? = null  //used for candle mode funcitons
-var isProcessRunning = true  //used for candle mode funcitons
-private lateinit var cameraManager: CameraManager   //used for candle mode funcitons
+var torchId: String? = null  //used for candle mode functions
+var isProcessRunning = true  //used for candle mode functions
+private lateinit var cameraManager: CameraManager   //used for candle mode functions
 
 
+@Suppress("NAME_SHADOWING")
 class KrowdKinectActivity : Activity() {
     //define the ably read-only API key and other channel values.
     private lateinit var options: ClientOptions
@@ -119,7 +123,9 @@ class KrowdKinectActivity : Activity() {
     private lateinit var hamburgerButton: ImageView
     private lateinit var popupContainer: FrameLayout
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, DelicateCoroutinesApi::class,
+        ExperimentalUnsignedTypes::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_krowdkinect)
@@ -206,7 +212,7 @@ class KrowdKinectActivity : Activity() {
             for (id in cameraIds) {
                 val characteristics = cameraManager.getCameraCharacteristics(id)
                 val hasTorch =
-                    characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) as? Boolean
+                    characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE)
                 if (hasTorch == true) {
                     torchId = id
                     break
@@ -350,6 +356,7 @@ class KrowdKinectActivity : Activity() {
                 //------   pixelArray and featuresArray Bits Parsed   ----------
                 //--------------------------------------------------------------
                 val littleEndian = ByteOrder.LITTLE_ENDIAN
+                val data = data ?: ByteArray(0)
                 val buffer = ByteBuffer.wrap(data).order(littleEndian)
                 // Extract the 16-bit values to pixelArray
                 for (i in 0 until pixelArrayBytes / 2) {
@@ -365,7 +372,7 @@ class KrowdKinectActivity : Activity() {
                 println(featuresArray)
 
                 //  Extract the remaining data it 8-bit RGB values into colorArray
-                val remainingDataBytes = data!!.size - pixelArrayBytes - featuresArrayBytes
+                val remainingDataBytes = data.size - pixelArrayBytes - featuresArrayBytes
                 val numberColorSets = remainingDataBytes / 3   //each r, g, b is a byte
                 val colorArray = Array(numberColorSets) { IntArray(3) }
                 for (i in 0 until numberColorSets) {
@@ -509,14 +516,14 @@ class KrowdKinectActivity : Activity() {
                                     val delay = (5000 - (currentTime % 5000)) + adjustment
                                     GlobalScope.launch {
                                         delay(delay.toLong())
-                                        PlayAudio(soundMapping, featureValue)
+                                        playAudio(soundMapping, featureValue)
                                     }
 
                                     //----------------------------------------------------
                                     //-------------   Un-synced Playback  ----------------
                                     //----------------------------------------------------
                                 } else {
-                                    PlayAudio(
+                                    playAudio(
                                         soundMapping,
                                         featureValue
                                     )
@@ -645,7 +652,7 @@ class KrowdKinectActivity : Activity() {
 
                     // Flashlight Strobe and Random Selection
                     if (featuresArray[9].toInt() != 255) {
-                        if (featuresArray[4].toInt() >= 3 && featuresArray[4].toInt() <= 27) {
+                        if (featuresArray[4].toInt() in 3..27) {
                             var flashCount = 0
                             val secondsRate = 30.00000
                             val flashRate = (secondsRate / BPM.toDouble()) * 1000
@@ -665,7 +672,7 @@ class KrowdKinectActivity : Activity() {
                         val randomNumber = Random.nextInt(3)
                         println(randomNumber)
                         if (randomNumber == 0) {
-                            if (featuresArray[4].toInt() >= 3 && featuresArray[4].toInt() <= 27) {
+                            if (featuresArray[4].toInt() in 3..27) {
                                 var flashCount = 0
                                 val secondsRate = 30.00000
                                 val flashRate = (secondsRate / BPM.toDouble()) * 1000
@@ -710,10 +717,10 @@ class KrowdKinectActivity : Activity() {
                         channel.unsubscribe()
                         ably.connection.close()
                         ably.connection.on(
-                            /* state = */ ConnectionState.closed,
+                            /* state = */ closed,
                         ) { state ->
                             println("New state is " + state.current.name)
-                            if (state.current == ConnectionState.closed) {
+                            if (state.current == closed) {
                                 // Connection closed
                                 println("Closed the connection to KrowdKinect Cloud.")
                                 red = 0
@@ -734,7 +741,7 @@ class KrowdKinectActivity : Activity() {
 
 
 
-    private fun PlayAudio(
+    private fun playAudio(
         soundMapping: Map<Int, Pair<Int, Float>>,
         featureValue: Int
     ) {
@@ -806,6 +813,7 @@ class KrowdKinectActivity : Activity() {
 
     // flashlight toggle function
     private fun toggleFlashlight(intensity: Int){
+        println(intensity)
         val packageManager = this.packageManager
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             val cameraManager = this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -847,27 +855,29 @@ class KrowdKinectActivity : Activity() {
     }
 
     // flashlight Brightness function
-    private fun torchIntensity(intensity: Int){
-        val packageManager = this.packageManager
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+ //   private fun torchIntensity(intensity: Int){
+ //       println(intensity)
+ //       val packageManager = this.packageManager
+ //       if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+ //           this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
             //val cameraId = cameraManager.cameraIdList[0]
 
-            try {
+ //           try {
                 //cameraManager.setTorchMode(cameraId, true)
-                if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) && isFlashOn) {
+ //               if ((android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) && isFlashOn) {
                     //   cameraManager.turnOnTorchWithStrengthLevel(cameraId, intensity)
-                    println("flashlight intensity code disabled for now")
-                }
-                isFlashOn = true
-            } catch (e: CameraAccessException) {
-                e.printStackTrace()
-            }
-        }
-    }
+ //                   println("flashlight intensity code disabled for now")
+ //               }
+ //               isFlashOn = true
+ //           } catch (e: CameraAccessException) {
+ //               e.printStackTrace()
+ //           }
+ //       }
+ //   }
 
     // flashlight ON function
     private fun flashlightOn(intensity: Int){
+        println(intensity)
         val packageManager = this.packageManager
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             val cameraManager = this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -914,6 +924,7 @@ class KrowdKinectActivity : Activity() {
     }
 
     private fun updateTorchIntensity(intensity: Double) {
+        println(intensity)
         try {
             cameraManager.setTorchMode(torchId!!, true)
             // Use intensity value as needed, e.g., for controlling torch brightness
@@ -925,6 +936,7 @@ class KrowdKinectActivity : Activity() {
     }
 
     private fun changeTorchIntensityBySteps(steps: Int) {
+        println(steps)
         try {
             // Use steps value as needed, e.g., for adjusting torch brightness by steps
         } catch (e: CameraAccessException) {
@@ -949,21 +961,20 @@ class KrowdKinectActivity : Activity() {
         //ably's doc say you must Unsubscribe from a channel and Detach from it both.
         channel.unsubscribe()
         ably.connection.close()
-        ably.connection.on(ConnectionState.closed, ConnectionStateListener { state ->
+        ably.connection.on(closed) { state ->
             println("New state is " + state.current.name)
-            if (state.current == ConnectionState.closed) {
+            if (state.current == closed) {
                 // Connection closed
                 //ablyindicator(false)
                 println("Closed the connection to Ably.")
-            }
-            else if (state.current == ConnectionState.failed) {
+            } else if (state.current == ConnectionState.failed) {
                 println("Attempt to Close Connection to Ably FAILED")
             }
             // Release the MediaPlayer resources when the activity is destroyed
             mediaPlayer?.release()
             mediaPlayer = null
             stopTorchControlProcess()
-        })
+        }
         runOnUiThread {setScreenBrightness(0.6f)}
     }
 
