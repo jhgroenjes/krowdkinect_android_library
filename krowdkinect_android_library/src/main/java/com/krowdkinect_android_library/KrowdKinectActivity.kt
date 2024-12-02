@@ -3,12 +3,12 @@
 
 package com.krowdkinect_android_library
 
+
 import android.app.Activity
 import android.app.AlertDialog
-import android.os.Bundle
-import android.widget.TextView
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.camera2.CameraAccessException
@@ -16,8 +16,14 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.icu.util.Calendar
 import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+//import android.util.Log
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ClickableSpan
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -25,7 +31,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-//import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+import android.widget.FrameLayout
 import io.ably.lib.realtime.*
 import io.ably.lib.types.*
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -36,6 +43,8 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.GregorianCalendar
 import kotlin.random.Random
+import androidx.core.text.HtmlCompat
+
 
 
 // pixelArray 16-bit Variables
@@ -69,7 +78,7 @@ var vDevID: UInt = 0u
 var torchBrightness : Int = 100
 var homeAwaySent = "All"
 val zoneItems = arrayOf("All", "Home", "Away")
-const val appVersion = "Ver. 0.5.9"
+const val appVersion = "Ver. 0.6.2"
 const val pixelArrayBytes = 18
 const val featuresArrayBytes = 14
 var screenPixel = false
@@ -106,6 +115,9 @@ class KrowdKinectActivity : Activity() {
 
     //audio player init.
     private var mediaPlayer: MediaPlayer? = null
+    // for the hamburger menu popup
+    private lateinit var hamburgerButton: ImageView
+    private lateinit var popupContainer: FrameLayout
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,6 +156,47 @@ class KrowdKinectActivity : Activity() {
          exitButton.setOnClickListener {
              showExitConfirmationDialog()
          }
+
+
+        hamburgerButton = findViewById(R.id.hamburgerButton)
+        popupContainer = findViewById(R.id.popupContainer)
+
+        // Show the popup when the hamburger button is clicked
+        hamburgerButton.setOnClickListener {
+            popupContainer.visibility = View.VISIBLE
+        }
+
+        // Hide the popup when the user clicks anywhere on it
+        popupContainer.setOnClickListener {
+            popupContainer.visibility = View.GONE
+        }
+
+        // popup window details
+        val versionTextPopup = findViewById<TextView>(R.id.versionTextPopup)
+        versionTextPopup.text = appVersion
+        versionTextPopup.setTextColor(Color.parseColor("#FFFFFF"))
+        val poweredByText = findViewById<TextView>(R.id.poweredByText)
+        val text = "Powered by KrowdKinect"
+        val spannableString = SpannableString(text)
+
+        // Define a ClickableSpan for "KrowdKinect"
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                // Open the URL in the default browser
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://krowdkinect.com"))
+                startActivity(intent)
+            }
+        }
+
+        // Apply the clickable span to the word "KrowdKinect"
+        val start = text.indexOf("KrowdKinect")
+        val end = start + "KrowdKinect".length
+        spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        // Set the SpannableString to the TextView
+        poweredByText.setTextColor(Color.parseColor("#FFFFFF"))
+        poweredByText.text = spannableString
+        poweredByText.movementMethod = android.text.method.LinkMovementMethod.getInstance()
 
 
         //  code to initialize the camera manager and set the torch ID needed for candle mode
@@ -189,8 +242,6 @@ class KrowdKinectActivity : Activity() {
         kKTxt.text = displayName
         val bTSTxt = findViewById<TextView>(R.id.BeTheShowText)
         bTSTxt.text = displayTagline
-        val vrTxt = findViewById<TextView>(R.id.versionText)
-        vrTxt.text = appVersion
         val seatTxt = findViewById<TextView>(R.id.seatText)
         val seatEditTxt = findViewById<EditText>(R.id.etSeatNumber)
         val zoneTxt = findViewById<TextView>(R.id.zoneText)
@@ -220,7 +271,6 @@ class KrowdKinectActivity : Activity() {
         //println(homeAwaySelection)
         kKTxt.setTextColor(Color.parseColor("#FFFFFF"))
         bTSTxt.setTextColor(Color.parseColor("#FFFFFF"))
-        vrTxt.setTextColor(Color.parseColor("#FFFFFF"))
         seatTxt.setTextColor(Color.parseColor("#FFFFFF"))
         seatEditTxt.setTextColor(Color.parseColor("#FFFFFF"))
         zoneTxt.setTextColor(Color.parseColor("#FFFFFF"))
@@ -710,14 +760,12 @@ class KrowdKinectActivity : Activity() {
             val bTSTxt = findViewById<TextView>(R.id.BeTheShowText)
             val seatTxt = findViewById<TextView>(R.id.seatText)
             val seatEditTxt = findViewById<EditText>(R.id.etSeatNumber)
-            val versionTxt = findViewById<TextView>(R.id.versionText)
             val zoneTxt = findViewById<TextView>(R.id.zoneText)
             val buttonTxt = findViewById<TextView>(R.id.pickListButton)
             kKTxt.setTextColor(Color.parseColor("#FFFFFF"))
             bTSTxt.setTextColor(Color.parseColor("#FFFFFF"))
             seatTxt.setTextColor(Color.parseColor("#FFFFFF"))
             seatEditTxt.setTextColor(Color.parseColor("#FFFFFF"))
-            versionTxt.setTextColor(Color.parseColor("#FFFFFF"))
             zoneTxt.setTextColor(Color.parseColor("#FFFFFF"))
             buttonTxt.setTextColor(Color.parseColor("#FFFFFF"))
         }
@@ -726,14 +774,12 @@ class KrowdKinectActivity : Activity() {
             val bTSTxt = findViewById<TextView>(R.id.BeTheShowText)
             val seatTxt = findViewById<TextView>(R.id.seatText)
             val seatEditTxt = findViewById<EditText>(R.id.etSeatNumber)
-            val versionTxt = findViewById<TextView>(R.id.versionText)
             val zoneTxt = findViewById<TextView>(R.id.zoneText)
             val buttonTxt = findViewById<TextView>(R.id.pickListButton)
             kKTxt.setTextColor(Color.parseColor("#000000"))
             bTSTxt.setTextColor(Color.parseColor("#000000"))
             seatTxt.setTextColor(Color.parseColor("#000000"))
             seatEditTxt.setTextColor(Color.parseColor("#000000"))
-            versionTxt.setTextColor(Color.parseColor("#000000"))
             zoneTxt.setTextColor(Color.parseColor("#000000"))
             buttonTxt.setTextColor(Color.parseColor("#000000"))
         }
